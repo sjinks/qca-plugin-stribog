@@ -21,4 +21,5 @@ The changes made to Alexey's code:
 ```bash
 qmake
 make
+sudo make install
 ```
