@@ -31,3 +31,6 @@ OTHER_FILES += qca-plugin-stribog.json
 		DEFINES += HAVE_CPUID_H
 	}
 }
+
+target.path = $$[QT_INSTALL_PLUGINS]/crypto
+INSTALLS   += target
