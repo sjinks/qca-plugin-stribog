@@ -1,4 +1,4 @@
-# qca-plugin-stribog
+# qca-plugin-stribog [![Build Status](https://travis-ci.org/sjinks/qca-plugin-stribog.svg?branch=master)](https://travis-ci.org/sjinks/qca-plugin-stribog)
 
 GOST R 34.11-2012 (Stribog) Hash Function plugin for QCA
 
@@ -23,3 +23,7 @@ qmake
 make
 sudo make install
 ```
+
+## Usage Example
+
+See https://github.com/sjinks/qca-plugin-stribog/blob/master/tests/hashtest.cpp
