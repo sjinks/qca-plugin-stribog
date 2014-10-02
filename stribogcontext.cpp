@@ -1,3 +1,5 @@
+#include <cassert>
+#include <cstring>
 #include "stribogcontext.h"
 
 StribogContext::StribogContext(QCA::Provider* provider, const QString& type)
@@ -14,7 +16,21 @@ void StribogContext::clear(void)
 
 void StribogContext::update(const QCA::MemoryRegion& a)
 {
-	GOST34112012Update(&this->m_ctx, reinterpret_cast<const unsigned char*>(a.data()), a.size());
+	const unsigned char* data = reinterpret_cast<const unsigned char*>(a.data());
+	std::size_t d             = static_cast<std::size_t>(d);
+	std::size_t offset        = ((d + 15) & ~0x0F) - d;
+
+	if (!offset) {
+		GOST34112012Update(&this->m_ctx, data, a.size());
+	}
+	else {
+		Q_DECL_ALIGN(16) unsigned char tmp[15];
+		assert(offset < 16);
+
+		memcpy(tmp, data, offset);
+		GOST34112012Update(&this->m_ctx, tmp, offset);
+		GOST34112012Update(&this->m_ctx, data + offset, a.size() - offset);
+	}
 }
 
 QCA::MemoryRegion StribogContext::final(void)

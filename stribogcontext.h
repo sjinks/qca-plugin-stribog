@@ -14,7 +14,7 @@ public:
 	virtual QCA::Provider::Context* clone(void) const;
 
 private:
-	GOST34112012Context m_ctx;
+	Q_DECL_ALIGN(16) GOST34112012Context m_ctx;
 };
 
 #endif // STRIBOGCONTEXT_H
