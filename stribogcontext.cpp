@@ -17,7 +17,7 @@ void StribogContext::clear(void)
 void StribogContext::update(const QCA::MemoryRegion& a)
 {
 	const unsigned char* data = reinterpret_cast<const unsigned char*>(a.data());
-	std::size_t d             = static_cast<std::size_t>(d);
+	std::size_t d             = reinterpret_cast<std::size_t>(data);
 	std::size_t offset        = ((d + 15) & ~0x0F) - d;
 
 	if (!offset) {

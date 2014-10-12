@@ -1,7 +1,7 @@
 #pragma GCC target ("mmx")
 
 #ifndef __MMX__
-#define __MMX__
+#define __MMX__ 1
 #endif
 
 #include <cstring>

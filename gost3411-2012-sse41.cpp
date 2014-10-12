@@ -1,4 +1,4 @@
-#pragma GCC target ("sse2,mmx")
+#pragma GCC target ("sse4.1,mmx")
 
 #ifndef __MMX__
 #define __MMX__ 1
@@ -12,11 +12,24 @@
 #define __SSE2__ 1
 #endif
 
+#ifndef __SSE3__
+#define __SSE3__ 1
+#endif
+
+#ifndef __SSSE3__
+#define __SSSE3__ 1
+#endif
+
+#ifndef __SSE4_1__
+#define __SSE4_1__ 1
+#endif
+
 #include <cstring>
 #include <mmintrin.h>
 #include <emmintrin.h>
+#include <smmintrin.h>
 #include "tables.h"
-#include "gost3411-2012-sse2.h"
+#include "gost3411-2012-sse41.h"
 
 static inline void add512(const union uint512_u* x, const union uint512_u* y, union uint512_u* r)
 {
@@ -37,40 +50,25 @@ static inline void add512(const union uint512_u* x, const union uint512_u* y, un
 template<unsigned int row>
 static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i xmm3)
 {
-	quint16 ax;
 	__m64 mm0, mm1;
 
-	ax  = _mm_extract_epi16(xmm0, row + 0);
-	mm0 = reinterpret_cast<__m64>(Ax[0][static_cast<quint8>(ax)]);
-	mm1 = reinterpret_cast<__m64>(Ax[0][static_cast<quint8>(ax >> 8)]);
+	mm0 = _mm_cvtsi64_m64(Ax[0][static_cast<quint8>(_mm_extract_epi8(xmm0, row + 0))]);
+	mm0 = _mm_xor_64(mm0, Ax[1][static_cast<quint8>(_mm_extract_epi8(xmm0, row + 8))]);
+	mm0 = _mm_xor_64(mm0, Ax[2][static_cast<quint8>(_mm_extract_epi8(xmm1, row + 0))]);
+	mm0 = _mm_xor_64(mm0, Ax[3][static_cast<quint8>(_mm_extract_epi8(xmm1, row + 8))]);
+	mm0 = _mm_xor_64(mm0, Ax[4][static_cast<quint8>(_mm_extract_epi8(xmm2, row + 0))]);
+	mm0 = _mm_xor_64(mm0, Ax[5][static_cast<quint8>(_mm_extract_epi8(xmm2, row + 8))]);
+	mm0 = _mm_xor_64(mm0, Ax[6][static_cast<quint8>(_mm_extract_epi8(xmm3, row + 0))]);
+	mm0 = _mm_xor_64(mm0, Ax[7][static_cast<quint8>(_mm_extract_epi8(xmm3, row + 8))]);
 
-	ax  = _mm_extract_epi16(xmm0, row + 4);
-	mm0 = _mm_xor_si64(mm0, reinterpret_cast<__m64>(Ax[1][static_cast<quint8>(ax)]));
-	mm1 = _mm_xor_si64(mm1, reinterpret_cast<__m64>(Ax[1][static_cast<quint8>(ax >> 8)]));
-
-	ax  = _mm_extract_epi16(xmm1, row + 0);
-	mm0 = _mm_xor_si64(mm0, reinterpret_cast<__m64>(Ax[2][static_cast<quint8>(ax)]));
-	mm1 = _mm_xor_si64(mm1, reinterpret_cast<__m64>(Ax[2][static_cast<quint8>(ax >> 8)]));
-
-	ax  = _mm_extract_epi16(xmm1, row + 4);
-	mm0 = _mm_xor_si64(mm0, reinterpret_cast<__m64>(Ax[3][static_cast<quint8>(ax)]));
-	mm1 = _mm_xor_si64(mm1, reinterpret_cast<__m64>(Ax[3][static_cast<quint8>(ax >> 8)]));
-
-	ax  = _mm_extract_epi16(xmm2, row + 0);
-	mm0 = _mm_xor_si64(mm0, reinterpret_cast<__m64>(Ax[4][static_cast<quint8>(ax)]));
-	mm1 = _mm_xor_si64(mm1, reinterpret_cast<__m64>(Ax[4][static_cast<quint8>(ax >> 8)]));
-
-	ax  = _mm_extract_epi16(xmm2, row + 4);
-	mm0 = _mm_xor_si64(mm0, reinterpret_cast<__m64>(Ax[5][static_cast<quint8>(ax)]));
-	mm1 = _mm_xor_si64(mm1, reinterpret_cast<__m64>(Ax[5][static_cast<quint8>(ax >> 8)]));
-
-	ax  = _mm_extract_epi16(xmm3, row + 0);
-	mm0 = _mm_xor_si64(mm0, reinterpret_cast<__m64>(Ax[6][static_cast<quint8>(ax)]));
-	mm1 = _mm_xor_si64(mm1, reinterpret_cast<__m64>(Ax[6][static_cast<quint8>(ax >> 8)]));
-
-	ax  = _mm_extract_epi16(xmm3, row + 4);
-	mm0 = _mm_xor_si64(mm0, reinterpret_cast<__m64>(Ax[7][static_cast<quint8>(ax)]));
-	mm1 = _mm_xor_si64(mm1, reinterpret_cast<__m64>(Ax[7][static_cast<quint8>(ax >> 8)]));
+	mm1 = _mm_cvtsi64_m64(Ax[0][static_cast<quint8>(_mm_extract_epi8(xmm0, row + 1))]);
+	mm1 = _mm_xor_64(mm1, Ax[1][static_cast<quint8>(_mm_extract_epi8(xmm0, row + 9))]);
+	mm1 = _mm_xor_64(mm1, Ax[2][static_cast<quint8>(_mm_extract_epi8(xmm1, row + 1))]);
+	mm1 = _mm_xor_64(mm1, Ax[3][static_cast<quint8>(_mm_extract_epi8(xmm1, row + 9))]);
+	mm1 = _mm_xor_64(mm1, Ax[4][static_cast<quint8>(_mm_extract_epi8(xmm2, row + 1))]);
+	mm1 = _mm_xor_64(mm1, Ax[5][static_cast<quint8>(_mm_extract_epi8(xmm2, row + 9))]);
+	mm1 = _mm_xor_64(mm1, Ax[6][static_cast<quint8>(_mm_extract_epi8(xmm3, row + 1))]);
+	mm1 = _mm_xor_64(mm1, Ax[7][static_cast<quint8>(_mm_extract_epi8(xmm3, row + 9))]);
 
 	return _mm_set_epi64(mm1, mm0);
 }
@@ -80,43 +78,29 @@ static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i 
 template<unsigned int row>
 static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i xmm3)
 {
-	quint64 r0, r1;
-	quint16 ax;
+	qint64 r0, r1;
 
-	ax  = _mm_extract_epi16(xmm0, row);
-	r0  = Ax[0][static_cast<quint8>(ax)];
-	r1  = Ax[0][static_cast<quint8>(ax >> 8)];
+	r0  = Ax[0][static_cast<quint8>(_mm_extract_epi8(xmm0, row + 0))];
+	r0 ^= Ax[1][static_cast<quint8>(_mm_extract_epi8(xmm0, row + 8))];
+	r0 ^= Ax[2][static_cast<quint8>(_mm_extract_epi8(xmm1, row + 0))];
+	r0 ^= Ax[3][static_cast<quint8>(_mm_extract_epi8(xmm1, row + 8))];
+	r0 ^= Ax[4][static_cast<quint8>(_mm_extract_epi8(xmm2, row + 0))];
+	r0 ^= Ax[5][static_cast<quint8>(_mm_extract_epi8(xmm2, row + 8))];
+	r0 ^= Ax[6][static_cast<quint8>(_mm_extract_epi8(xmm3, row + 0))];
+	r0 ^= Ax[7][static_cast<quint8>(_mm_extract_epi8(xmm3, row + 8))];
 
-	ax  = _mm_extract_epi16(xmm0, row + 4);
-	r0 ^= Ax[1][static_cast<quint8>(ax)];
-	r1 ^= Ax[1][static_cast<quint8>(ax >> 8)];
+	r1  = Ax[0][static_cast<quint8>(_mm_extract_epi8(xmm0, row + 1))];
+	r1 ^= Ax[1][static_cast<quint8>(_mm_extract_epi8(xmm0, row + 9))];
+	r1 ^= Ax[2][static_cast<quint8>(_mm_extract_epi8(xmm1, row + 1))];
+	r1 ^= Ax[3][static_cast<quint8>(_mm_extract_epi8(xmm1, row + 9))];
+	r1 ^= Ax[4][static_cast<quint8>(_mm_extract_epi8(xmm2, row + 1))];
+	r1 ^= Ax[5][static_cast<quint8>(_mm_extract_epi8(xmm2, row + 9))];
+	r1 ^= Ax[6][static_cast<quint8>(_mm_extract_epi8(xmm3, row + 1))];
+	r1 ^= Ax[7][static_cast<quint8>(_mm_extract_epi8(xmm3, row + 9))];
 
-	ax  = _mm_extract_epi16(xmm1, row);
-	r0 ^= Ax[2][static_cast<quint8>(ax)];
-	r1 ^= Ax[2][static_cast<quint8>(ax >> 8)];
-
-	ax  = _mm_extract_epi16(xmm1, row + 4);
-	r0 ^= Ax[3][static_cast<quint8>(ax)];
-	r1 ^= Ax[3][static_cast<quint8>(ax >> 8)];
-
-	ax  = _mm_extract_epi16(xmm2, row);
-	r0 ^= Ax[4][static_cast<quint8>(ax)];
-	r1 ^= Ax[4][static_cast<quint8>(ax >> 8)];
-
-	ax  = _mm_extract_epi16(xmm2, row + 4);
-	r0 ^= Ax[5][static_cast<quint8>(ax)];
-	r1 ^= Ax[5][static_cast<quint8>(ax >> 8)];
-
-	ax  = _mm_extract_epi16(xmm3, row);
-	r0 ^= Ax[6][static_cast<quint8>(ax)];
-	r1 ^= Ax[6][static_cast<quint8>(ax >> 8)];
-
-	ax  = _mm_extract_epi16(xmm3, row + 4);
-	r0 ^= Ax[7][static_cast<quint8>(ax)];
-	r1 ^= Ax[7][static_cast<quint8>(ax >> 8)];
-
-	return _mm_set_epi64x(r1, r0);
+	return _mm_insert_epi64(_mm_cvtsi64_si128(r0), r1, 1);
 }
+
 #endif
 
 static inline void g(union uint512_u* h, const union uint512_u* N, const union uint512_u* m)
@@ -142,9 +126,9 @@ static inline void g(union uint512_u* h, const union uint512_u* N, const union u
 	xmm6 = _mm_xor_si128(xmm6, _mm_load_si128(&pH[3]));
 
 	tmm0 = extract<0>(xmm0, xmm2, xmm4, xmm6);
-	tmm1 = extract<1>(xmm0, xmm2, xmm4, xmm6);
-	tmm2 = extract<2>(xmm0, xmm2, xmm4, xmm6);
-	tmm3 = extract<3>(xmm0, xmm2, xmm4, xmm6);
+	tmm1 = extract<2>(xmm0, xmm2, xmm4, xmm6);
+	tmm2 = extract<4>(xmm0, xmm2, xmm4, xmm6);
+	tmm3 = extract<6>(xmm0, xmm2, xmm4, xmm6);
 
 	xmm0 = tmm0;
 	xmm2 = tmm1;
@@ -164,9 +148,9 @@ static inline void g(union uint512_u* h, const union uint512_u* N, const union u
 	xmm7 = _mm_xor_si128(xmm7, xmm6);
 
 	tmm0 = extract<0>(xmm1, xmm3, xmm5, xmm7);
-	tmm1 = extract<1>(xmm1, xmm3, xmm5, xmm7);
-	tmm2 = extract<2>(xmm1, xmm3, xmm5, xmm7);
-	tmm3 = extract<3>(xmm1, xmm3, xmm5, xmm7);
+	tmm1 = extract<2>(xmm1, xmm3, xmm5, xmm7);
+	tmm2 = extract<4>(xmm1, xmm3, xmm5, xmm7);
+	tmm3 = extract<6>(xmm1, xmm3, xmm5, xmm7);
 
 	xmm1 = tmm0;
 	xmm3 = tmm1;
@@ -183,9 +167,9 @@ static inline void g(union uint512_u* h, const union uint512_u* N, const union u
 		xmm6 = _mm_xor_si128(xmm6, _mm_load_si128(&p[3]));
 
 		tmm0 = extract<0>(xmm0, xmm2, xmm4, xmm6);
-		tmm1 = extract<1>(xmm0, xmm2, xmm4, xmm6);
-		tmm2 = extract<2>(xmm0, xmm2, xmm4, xmm6);
-		tmm3 = extract<3>(xmm0, xmm2, xmm4, xmm6);
+		tmm1 = extract<2>(xmm0, xmm2, xmm4, xmm6);
+		tmm2 = extract<4>(xmm0, xmm2, xmm4, xmm6);
+		tmm3 = extract<6>(xmm0, xmm2, xmm4, xmm6);
 
 		xmm0 = tmm0;
 		xmm2 = tmm1;
@@ -200,9 +184,9 @@ static inline void g(union uint512_u* h, const union uint512_u* N, const union u
 		xmm7 = _mm_xor_si128(xmm7, xmm6);
 
 		tmm0 = extract<0>(xmm1, xmm3, xmm5, xmm7);
-		tmm1 = extract<1>(xmm1, xmm3, xmm5, xmm7);
-		tmm2 = extract<2>(xmm1, xmm3, xmm5, xmm7);
-		tmm3 = extract<3>(xmm1, xmm3, xmm5, xmm7);
+		tmm1 = extract<2>(xmm1, xmm3, xmm5, xmm7);
+		tmm2 = extract<4>(xmm1, xmm3, xmm5, xmm7);
+		tmm3 = extract<6>(xmm1, xmm3, xmm5, xmm7);
 
 		xmm1 = tmm0;
 		xmm3 = tmm1;
@@ -219,9 +203,9 @@ static inline void g(union uint512_u* h, const union uint512_u* N, const union u
 	xmm6 = _mm_xor_si128(xmm6, _mm_load_si128(&p[3]));
 
 	tmm0 = extract<0>(xmm0, xmm2, xmm4, xmm6);
-	tmm1 = extract<1>(xmm0, xmm2, xmm4, xmm6);
-	tmm2 = extract<2>(xmm0, xmm2, xmm4, xmm6);
-	tmm3 = extract<3>(xmm0, xmm2, xmm4, xmm6);
+	tmm1 = extract<2>(xmm0, xmm2, xmm4, xmm6);
+	tmm2 = extract<4>(xmm0, xmm2, xmm4, xmm6);
+	tmm3 = extract<6>(xmm0, xmm2, xmm4, xmm6);
 
 	xmm0 = tmm0;
 	xmm2 = tmm1;
@@ -257,7 +241,7 @@ static inline void stage2(GOST34112012Context* CTX, const union uint512_u* data)
 	add512(&CTX->Sigma, data, &CTX->Sigma);
 }
 
-void GOST34112012Update_sse2(GOST34112012Context* ctx, const unsigned char* data, std::size_t len)
+void GOST34112012Update_sse41(GOST34112012Context* ctx, const unsigned char* data, std::size_t len)
 {
 	std::size_t chunksize;
 	const union uint512_u* d = reinterpret_cast<const union uint512_u*>(data);
@@ -290,7 +274,7 @@ void GOST34112012Update_sse2(GOST34112012Context* ctx, const unsigned char* data
 	_mm_empty();
 }
 
-void GOST34112012Final_sse2(GOST34112012Context* ctx, unsigned char* digest)
+void GOST34112012Final_sse41(GOST34112012Context* ctx, unsigned char* digest)
 {
 	Q_DECL_ALIGN(16) union uint512_u buf;
 
