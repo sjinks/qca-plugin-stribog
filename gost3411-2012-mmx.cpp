@@ -9,7 +9,13 @@
 #include "tables.h"
 #include "gost3411-2012-mmx.h"
 
-static inline __m64 i64_to_m64(quint64 x)
+#if defined(__GNUC_PREREQ) && __GNUC_PREREQ(4,8)
+#	define TARGET_MMX
+#else
+#	define TARGET_MMX __attribute__((target("sse2")))
+#endif
+
+TARGET_MMX static inline __m64 i64_to_m64(quint64 x)
 {
 #ifndef __x86_64__
 	return _mm_setr_pi32(static_cast<quint32>(x), static_cast<quint32>(x >> 32));
@@ -18,7 +24,7 @@ static inline __m64 i64_to_m64(quint64 x)
 #endif
 }
 
-static inline quint64 m64_to_i64(__m64 x)
+TARGET_MMX static inline quint64 m64_to_i64(__m64 x)
 {
 #ifndef __x86_64__
 	return reinterpret_cast<quint64>(x);
@@ -27,7 +33,7 @@ static inline quint64 m64_to_i64(__m64 x)
 #endif
 }
 
-static inline void xtranspose(const union uint512_u* x, const union uint512_u* y, union uint512_u* z)
+TARGET_MMX static inline void xtranspose(const union uint512_u* x, const union uint512_u* y, union uint512_u* z)
 {
 	__m64 mm0, mm1, mm2, mm3, mm4, mm5, mm6, mm7;
 	__m64 tm0, tm1, tm2, tm3, tm4, tm5, tm6, tm7;
@@ -85,7 +91,7 @@ static inline void xtranspose(const union uint512_u* x, const union uint512_u* y
 	z->QWORD[7] = m64_to_i64(mm7);
 }
 
-static void XLPS(const union uint512_u* x, const union uint512_u* y, union uint512_u* data)
+TARGET_MMX static inline void XLPS(const union uint512_u* x, const union uint512_u* y, union uint512_u* data)
 {
 	uint i;
 	quint8* p;
@@ -108,7 +114,7 @@ static void XLPS(const union uint512_u* x, const union uint512_u* y, union uint5
 	}
 }
 
-static inline void X(const union uint512_u* x, const union uint512_u* y, union uint512_u* z)
+TARGET_MMX static inline void X(const union uint512_u* x, const union uint512_u* y, union uint512_u* z)
 {
 	z->QWORD[0] = m64_to_i64(_mm_xor_si64(i64_to_m64(x->QWORD[0]), i64_to_m64(y->QWORD[0])));
 	z->QWORD[1] = m64_to_i64(_mm_xor_si64(i64_to_m64(x->QWORD[1]), i64_to_m64(y->QWORD[1])));
@@ -134,7 +140,7 @@ static inline void add512(const union uint512_u* x, const union uint512_u* y, un
 	}
 }
 
-static void g(union uint512_u* h, const union uint512_u* N, const union uint512_u* m)
+TARGET_MMX static void g(union uint512_u* h, const union uint512_u* N, const union uint512_u* m)
 {
 	Q_DECL_ALIGN(16) union uint512_u Ki, data;
 	uint i;

@@ -18,6 +18,12 @@
 #include "tables.h"
 #include "gost3411-2012-sse2.h"
 
+#if defined(__GNUC_PREREQ) && __GNUC_PREREQ(4,8)
+#	define TARGET_SSE2
+#else
+#	define TARGET_SSE2 __attribute__((target("sse2")))
+#endif
+
 static inline void add512(const union uint512_u* x, const union uint512_u* y, union uint512_u* r)
 {
 	uint i, CF;
@@ -35,7 +41,7 @@ static inline void add512(const union uint512_u* x, const union uint512_u* y, un
 #if __i386__
 
 template<unsigned int row>
-static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i xmm3)
+TARGET_SSE2 static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i xmm3)
 {
 	quint16 ax;
 	__m64 mm0, mm1;
@@ -78,7 +84,7 @@ static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i 
 #else
 
 template<unsigned int row>
-static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i xmm3)
+TARGET_SSE2 static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i xmm3)
 {
 	quint64 r0, r1;
 	quint16 ax;
@@ -119,7 +125,7 @@ static inline __m128i extract(__m128i xmm0, __m128i xmm1, __m128i xmm2, __m128i 
 }
 #endif
 
-static inline void g(union uint512_u* h, const union uint512_u* N, const union uint512_u* m)
+TARGET_SSE2 static inline void g(union uint512_u* h, const union uint512_u* N, const union uint512_u* m)
 {
 	__m128i xmm0, xmm2, xmm4, xmm6;
 	__m128i xmm1, xmm3, xmm5, xmm7;
