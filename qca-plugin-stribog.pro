@@ -24,8 +24,6 @@ HEADERS += \
 	gost3411-2012.h \
 	tables.h
 
-OTHER_FILES += qca-plugin-stribog.json
-
 *-g++* {
 	system("echo '$$LITERAL_HASH include <cpuid.h>' | g++ -c -xc++ - -o /dev/null > /dev/null 2>&1") {
 		DEFINES += HAVE_CPUID_H
