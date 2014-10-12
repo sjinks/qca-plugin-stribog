@@ -1,4 +1,4 @@
-#pragma GCC target ("sse4.1,mmx")
+#pragma GCC target ("sse4.1,sse2,mmx")
 
 #ifndef __MMX__
 #define __MMX__ 1
