@@ -77,20 +77,21 @@ static inline void X(const union uint512_u* x, const union uint512_u* y, union u
 static inline void add512(const union uint512_u* x, const union uint512_u* y, union uint512_u* r)
 {
 #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-	int i, CF, OF;
+	uint i, CF;
 
 	CF = 0;
 	for (i=0; i<8; ++i) {
-		r->QWORD[i]  = x->QWORD[i] + y->QWORD[i];
-		OF           = (r->QWORD[i] < y->QWORD[i]) ? 1 : 0;
-		r->QWORD[i] += CF;
-		CF           = OF;
+		quint64 a   = x->QWORD[i];
+		quint64 b   = y->QWORD[i];
+		quint64 sum = a + b + CF;
+		CF          = ((sum < b) ? 1 : ((sum > b) ? 0 : CF));
+		r->QWORD[i] = sum;
 	}
 #else
-	const unsigned char *xp, *yp;
-	unsigned char *rp;
-	unsigned int i;
-	int buf;
+	const quint8 *xp, *yp;
+	quint8 *rp;
+	uint i;
+	quint32 buf;
 
 	xp = x->BYTE;
 	yp = y->BYTE;
