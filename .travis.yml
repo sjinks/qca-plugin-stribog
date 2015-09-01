@@ -7,8 +7,6 @@ compiler:
 install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq libqt4-dev libqca2-dev
-  - cat /proc/cpuinfo | grep flags
-  - apt-cache search gcc | grep gcc
 
 script:
   - qmake && make && ln -s ../../qca-plugin-stribog.so tests/crypto/qca-plugin-stribog.so && cd tests && qmake && make && ./tst_stribog
