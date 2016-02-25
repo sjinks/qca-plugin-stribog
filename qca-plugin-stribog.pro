@@ -13,7 +13,7 @@ SOURCES += \
 	gost3411-2012-sse2.cpp \
 	gost3411-2012.cpp \
 	tables.cpp \
-    gost3411-2012-sse41.cpp
+	gost3411-2012-sse41.cpp
 
 HEADERS += \
 	qcastribogplugin.h \
@@ -24,7 +24,7 @@ HEADERS += \
 	gost3411-2012-sse2.h \
 	gost3411-2012.h \
 	tables.h \
-    gost3411-2012-sse41.h
+	gost3411-2012-sse41.h
 
 *-g++* {
 	system("echo '$$LITERAL_HASH include <cpuid.h>' | g++ -c -xc++ - -o /dev/null > /dev/null 2>&1") {
