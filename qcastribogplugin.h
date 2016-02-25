@@ -1,7 +1,7 @@
 #ifndef QCASTRIBOGPLUGIN_H
 #define QCASTRIBOGPLUGIN_H
 
-#include <QtCrypto/qcaprovider.h>
+#include <qcaprovider.h>
 
 class Q_DECL_HIDDEN QCAStribogPlugin : public QObject, public QCAPlugin {
 	Q_OBJECT
