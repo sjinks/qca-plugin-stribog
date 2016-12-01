@@ -3,12 +3,12 @@
 
 #include <QtCore/QtGlobal>
 
-union uint512_u {
+union Q_DECL_ALIGN(16) uint512_u {
 	quint64 QWORD[8];
 	quint8 BYTE[64];
-} Q_DECL_ALIGN(16);
+};
 
-Q_DECL_ALIGN(16) typedef struct GOST34112012Context {
+typedef struct Q_DECL_ALIGN(16) GOST34112012Context {
 	Q_DECL_ALIGN(16) union uint512_u buffer;
 	Q_DECL_ALIGN(16) union uint512_u hash;
 	Q_DECL_ALIGN(16) union uint512_u h;
