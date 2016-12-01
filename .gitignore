@@ -2,3 +2,5 @@ Makefile
 *.o
 *.so
 moc_*.cpp
+.qmake.stash
+*.pro.user
