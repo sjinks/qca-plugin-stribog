@@ -14,7 +14,7 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get -qq -y install libqt4-dev qtbase5-dev qtchooser libqca2-dev libqca-qt5-2-dev
   - qmake -query
-  - sudo cp /usr/lib/$(uname -m)-linux-gnu/mkspecs/features/crypto.prf $(qmake -query QT_INSTALL_PREFIX)/mkspecs/features/ || true
+  - sudo cp /usr/lib/$(uname -m)-linux-gnu/mkspecs/features/crypto.prf $(qmake -query QT_HOST_DATA)/mkspecs/features/ || true
 
 script:
   - qmake && make && ln -s ../../qca-plugin-stribog.so tests/crypto/qca-plugin-stribog.so && cd tests && qmake && make && ./tst_stribog
