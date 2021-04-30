@@ -26,6 +26,10 @@ make
 sudo make install
 ```
 
+## Compatibility:
+
+Qt 4, Qt 5
+
 ## Usage Example
 
 See https://github.com/sjinks/qca-plugin-stribog/blob/master/tests/hashtest.cpp
