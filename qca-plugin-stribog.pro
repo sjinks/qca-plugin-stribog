@@ -4,6 +4,9 @@ TARGET   = qca-plugin-stribog
 TEMPLATE = lib
 CONFIG  += plugin crypto bsymbolic_functions hide_symbols no_plugin_name_prefix
 
+INCLUDEPATH += /usr/include/Qca-qt5/QtCrypto
+LIBS += -lqca-qt5
+
 SOURCES += \
 	qcastribogprovider.cpp \
 	qcastribogplugin.cpp \

@@ -1,0 +1,49 @@
+name: Build and Test
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+jobs:
+  ci:
+    if: ${{ !contains(github.event.head_commit.message, '[ci skip]') || github.event_name == 'workflow_dispatch' }}
+    strategy:
+      fail-fast: true
+      matrix:
+        cxx:
+          - clang
+          - g++
+        qt:
+          - 4
+          - 5
+    name: "Build and Test (${{ matrix.cxx }}, Qt ${{ matrix.qt }})"
+    runs-on: ubuntu-latest
+    env:
+      QT_SELECT: ${{ matrix.qt }}
+    steps:
+      - name: Check out the source code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: sudo apt-get -qq update && sudo apt-get install -qq libqt4-dev qtbase5-dev qtchooser libqca2-dev libqca-qt5-2-dev
+
+      - name: Set up crypto.prf
+        run: sudo cp "/usr/lib/$(uname -m)-linux-gnu/mkspecs/features/crypto.prf" "$(qmake -query QT_HOST_DATA)/mkspecs/features/" || true
+
+      - name: Add error matcher
+        run: echo "::add-matcher::$(pwd)/.github/problem-matcher-gcc.json"
+
+      - name: Build the plugin
+        run: qmake && make
+
+      - name: Build tests
+        run: qmake && make
+        working-directory: tests
+
+      - name: Create a symlink to the plugin
+        run: ln -s ../../qca-plugin-stribog.so tests/crypto/qca-plugin-stribog.so
+
+      - name: Run tests
+        run: ./tst_stribog
+        working-directory: tests

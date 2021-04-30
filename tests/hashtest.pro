@@ -1,5 +1,5 @@
 QT       = core testlib
-CONFIG  += console crypto
+CONFIG  += console crypto debug
 CONFIG  -= app_bundle
 TARGET   = tst_stribog
 TEMPLATE = app
@@ -11,3 +11,6 @@ lessThan(QT_MAJOR_VERSION, 5) {
 else {
 	DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
 }
+
+INCLUDEPATH += /usr/include/Qca-qt5/QtCrypto
+LIBS += -lqca-qt5
