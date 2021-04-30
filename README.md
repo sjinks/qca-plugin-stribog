@@ -1,4 +1,6 @@
-# qca-plugin-stribog [![Build Status](https://travis-ci.org/sjinks/qca-plugin-stribog.svg?branch=master)](https://travis-ci.org/sjinks/qca-plugin-stribog)
+# qca-plugin-stribog
+
+[![Build and Test](https://github.com/sjinks/qca-plugin-stribog/actions/workflows/test.yml/badge.svg)](https://github.com/sjinks/qca-plugin-stribog/actions/workflows/test.yml)
 
 GOST R 34.11-2012 (Stribog) Hash Function plugin for QCA
 
