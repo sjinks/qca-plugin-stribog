@@ -1,6 +1,6 @@
 #include <QtCore/QCoreApplication>
 #include <QtTest/QTest>
-#include <QtCrypto/QtCrypto>
+#include <QtCrypto>
 
 class StribogTests : public QObject {
 	Q_OBJECT

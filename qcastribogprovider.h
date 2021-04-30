@@ -1,7 +1,7 @@
 #ifndef QCASTRIBOGPROVIDER_H
 #define QCASTRIBOGPROVIDER_H
 
-#include <QtCrypto/qcaprovider.h>
+#include <qcaprovider.h>
 
 class Q_DECL_HIDDEN QCAStribogProvider : public QCA::Provider {
 public:

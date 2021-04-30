@@ -1,7 +1,7 @@
 #ifndef STRIBOGCONTEXT_H
 #define STRIBOGCONTEXT_H
 
-#include <QtCrypto/qcaprovider.h>
+#include <qcaprovider.h>
 #include "gost3411-2012.h"
 
 class Q_DECL_HIDDEN StribogContext : public QCA::HashContext {

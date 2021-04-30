@@ -16,9 +16,9 @@ jobs:
           - g++
         qt:
           - version: 4
-            qca: libqca2-dev
+            deps: libqt4-dev libqca2-dev
           - version: 5
-            qca: libqca-qt5-2-dev
+            deps: qtbase5-dev libqca-qt5-2-dev
     name: "Build and Test (${{ matrix.cxx }}, Qt ${{ matrix.qt.version }})"
     runs-on: ubuntu-18.04
     env:
@@ -28,10 +28,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: sudo apt-get -qq update && sudo apt-get install -qq libqt4-dev qtbase5-dev qtchooser ${{ matrix.qt.qca }}
-
-      - name: Set up crypto.prf
-        run: sudo cp "/usr/lib/$(uname -m)-linux-gnu/mkspecs/features/crypto.prf" "$(qmake -query QT_HOST_DATA)/mkspecs/features/" || true
+        run: sudo apt-get -qq update && sudo apt-get install -qq ${{ matrix.qt.deps }}
 
       - name: Add error matcher
         run: echo "::add-matcher::$(pwd)/.github/problem-matcher-gcc.json"
@@ -44,7 +41,7 @@ jobs:
         working-directory: tests
 
       - name: Create a symlink to the plugin
-        run: ln -s ../../qca-plugin-stribog.so tests/crypto/qca-plugin-stribog.so
+        run: mkdir -p tests/crypto/ && ln -s ../../qca-plugin-stribog.so tests/crypto/qca-plugin-stribog.so
 
       - name: Run tests
         run: ./tst_stribog
