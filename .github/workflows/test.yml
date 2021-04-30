@@ -15,18 +15,20 @@ jobs:
           - clang++
           - g++
         qt:
-          - 4
-          - 5
-    name: "Build and Test (${{ matrix.cxx }}, Qt ${{ matrix.qt }})"
+          - version: 4
+            qca: libqca2-dev
+          - version: 5
+            qca: libqca-qt5-2-dev
+    name: "Build and Test (${{ matrix.cxx }}, Qt ${{ matrix.qt.version }})"
     runs-on: ubuntu-18.04
     env:
-      QT_SELECT: ${{ matrix.qt }}
+      QT_SELECT: ${{ matrix.qt.version }}
     steps:
       - name: Check out the source code
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: sudo apt-get -qq update && sudo apt-get install -qq libqt4-dev qtbase5-dev qtchooser libqca2-dev libqca-qt5-2-dev
+        run: sudo apt-get -qq update && sudo apt-get install -qq libqt4-dev qtbase5-dev qtchooser ${{ matrix.qt.qca }}
 
       - name: Set up crypto.prf
         run: sudo cp "/usr/lib/$(uname -m)-linux-gnu/mkspecs/features/crypto.prf" "$(qmake -query QT_HOST_DATA)/mkspecs/features/" || true
