@@ -22,7 +22,7 @@ jobs:
           - version: 5
             deps: qtbase5-dev libqca-qt5-2-dev
     name: "Build and Test (${{ matrix.cxx }}, Qt ${{ matrix.qt.version }})"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       QT_SELECT: ${{ matrix.qt.version }}
     steps:
