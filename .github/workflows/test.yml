@@ -17,17 +17,15 @@ jobs:
           - clang++
           - g++
         qt:
-          - version: 4
-            deps: libqt4-dev libqca2-dev
           - version: 5
             deps: qtbase5-dev libqca-qt5-2-dev
     name: "Build and Test (${{ matrix.cxx }}, Qt ${{ matrix.qt.version }})"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       QT_SELECT: ${{ matrix.qt.version }}
     steps:
       - name: Check out the source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: sudo apt-get -qq update && sudo apt-get install -qq ${{ matrix.qt.deps }}
