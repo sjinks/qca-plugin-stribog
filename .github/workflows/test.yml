@@ -25,7 +25,7 @@ jobs:
       QT_SELECT: ${{ matrix.qt.version }}
     steps:
       - name: Check out the source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install dependencies
         run: sudo apt-get -qq update && sudo apt-get install -qq ${{ matrix.qt.deps }}
